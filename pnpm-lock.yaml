@@ -36,8 +36,8 @@ importers:
         specifier: 18.0.11
         version: 18.0.11
       ws:
-        specifier: ^8.18.0
-        version: 8.20.0
+        specifier: ^8.21.3
+        version: 8.21.3
     devDependencies:
       '@stryker-mutator/core':
         specifier: ^9.6.1
@@ -201,11 +201,13 @@ packages:
   '@ccusage/codex@18.0.11':
     resolution: {integrity: sha512-/S0dyaO3yDegtGXTaMhu1ZyT3JbSuHsiUiIu9uP6UmqIAtSd9DOko1qkM6K1roePbF/rlk596GDHW1f0664D3A==}
     engines: {node: '>=20.19.4'}
+    deprecated: Deprecated in favor of npx ccusage (use ccusage@20)
     hasBin: true
 
   '@ccusage/mcp@18.0.11':
     resolution: {integrity: sha512-R/pxJbSTr0n2ToZmpztsMBEX8qZjnnB7V1QGjT9g6C9TcZjWROSoqDNdzcrXYDS+Vb0pa2os/o4mq4LhJd6P3Q==}
     engines: {node: '>=20.19.4'}
+    deprecated: Deprecated in favor of npx ccusage (use ccusage@20)
     hasBin: true
 
   '@hono/mcp@0.1.5':
@@ -1253,8 +1255,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.20.0:
-    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
+  ws@8.21.3:
+    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1670,7 +1672,7 @@ snapshots:
       lodash.pickby: 4.6.0
       protobufjs: 7.5.6
       qs: 6.15.1
-      ws: 8.20.0
+      ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -2578,7 +2580,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.20.0: {}
+  ws@8.21.3: {}
 
   yallist@3.1.1: {}
 
