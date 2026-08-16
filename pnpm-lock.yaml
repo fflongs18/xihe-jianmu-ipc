@@ -33,8 +33,8 @@ importers:
         specifier: ^12.8.0
         version: 12.9.0
       ccusage:
-        specifier: 18.0.11
-        version: 18.0.11
+        specifier: 20.0.19
+        version: 20.0.19
       ws:
         specifier: ^8.18.0
         version: 8.20.0
@@ -198,14 +198,46 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
+  '@ccusage/ccusage-darwin-arm64@20.0.19':
+    resolution: {integrity: sha512-8b69h4tuMH1KNW+EYjFRJWpbWHXbMUtFu8cOCyFOQsR6lGxq37g0kzEGHSqG+iZEoUTHaabR5CE7ZHLhW9Q64A==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@ccusage/ccusage-darwin-x64@20.0.19':
+    resolution: {integrity: sha512-YTsqIfsPo3qR9OMrwJtnJoq/fil7Jk5mzXV8k0Iejpiq7zysw4FfkjCeHr0UVJG8ihdqtE18o+xIk99p3v+5Ew==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@ccusage/ccusage-linux-arm64@20.0.19':
+    resolution: {integrity: sha512-4e+7hV3WrEpM7hQPQkh4/zNLTUSqzpd+vSSWl2y659+xQ+JCDLWqE6gzvXLMOAT/LTtcFtlrduIWDZt8VPceqQ==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@ccusage/ccusage-linux-x64@20.0.19':
+    resolution: {integrity: sha512-VPbB6onrwOGojTKutFzeahttb98ZgmdsiQpOr/BJet1i3QdrmUGXGmJSt591xXrvVOVVgsC7/5wBELdWM9/bKA==}
+    cpu: [x64]
+    os: [linux]
+
+  '@ccusage/ccusage-win32-arm64@20.0.19':
+    resolution: {integrity: sha512-oOv4mZkapxzvQeAMI+jqfTOv/zN2x2AYPAD+F4AnYHQQL4n898axhH9uPd2Ls0U5CDlvfh1zDTyNILz8X9M15A==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@ccusage/ccusage-win32-x64@20.0.19':
+    resolution: {integrity: sha512-KtDlTk07uv8cu6TlizB/RptcDiQePE1YSQe6uNNZTUnwVy9zq5R3fvUUFr9/d3FYHwimSGduoHXRS8Ta+Kmkrw==}
+    cpu: [x64]
+    os: [win32]
+
   '@ccusage/codex@18.0.11':
     resolution: {integrity: sha512-/S0dyaO3yDegtGXTaMhu1ZyT3JbSuHsiUiIu9uP6UmqIAtSd9DOko1qkM6K1roePbF/rlk596GDHW1f0664D3A==}
     engines: {node: '>=20.19.4'}
+    deprecated: Deprecated in favor of npx ccusage (use ccusage@20)
     hasBin: true
 
   '@ccusage/mcp@18.0.11':
     resolution: {integrity: sha512-R/pxJbSTr0n2ToZmpztsMBEX8qZjnnB7V1QGjT9g6C9TcZjWROSoqDNdzcrXYDS+Vb0pa2os/o4mq4LhJd6P3Q==}
     engines: {node: '>=20.19.4'}
+    deprecated: Deprecated in favor of npx ccusage (use ccusage@20)
     hasBin: true
 
   '@hono/mcp@0.1.5':
@@ -563,6 +595,10 @@ packages:
   ccusage@18.0.11:
     resolution: {integrity: sha512-QIFCY2gh06vjWelND1gDwJxrniAcNkPw0OHUhz985iE7FIEf738YVzxUKQMKhA2fO9CIJCz0dSpnyIufaKdjdA==}
     engines: {node: '>=20.19.4'}
+    hasBin: true
+
+  ccusage@20.0.19:
+    resolution: {integrity: sha512-vyNIyctcvTKFbrsU/WJuWiII3CVw8WopU/0NcR+lKmRbh62wm0jccmkWrFCG6j7R8agc8mIBz5+YlmGbXH1RnQ==}
     hasBin: true
 
   chalk@5.6.2:
@@ -1498,6 +1534,24 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
+  '@ccusage/ccusage-darwin-arm64@20.0.19':
+    optional: true
+
+  '@ccusage/ccusage-darwin-x64@20.0.19':
+    optional: true
+
+  '@ccusage/ccusage-linux-arm64@20.0.19':
+    optional: true
+
+  '@ccusage/ccusage-linux-x64@20.0.19':
+    optional: true
+
+  '@ccusage/ccusage-win32-arm64@20.0.19':
+    optional: true
+
+  '@ccusage/ccusage-win32-x64@20.0.19':
+    optional: true
+
   '@ccusage/codex@18.0.11': {}
 
   '@ccusage/mcp@18.0.11':
@@ -1922,6 +1976,15 @@ snapshots:
   caniuse-lite@1.0.30001791: {}
 
   ccusage@18.0.11: {}
+
+  ccusage@20.0.19:
+    optionalDependencies:
+      '@ccusage/ccusage-darwin-arm64': 20.0.19
+      '@ccusage/ccusage-darwin-x64': 20.0.19
+      '@ccusage/ccusage-linux-arm64': 20.0.19
+      '@ccusage/ccusage-linux-x64': 20.0.19
+      '@ccusage/ccusage-win32-arm64': 20.0.19
+      '@ccusage/ccusage-win32-x64': 20.0.19
 
   chalk@5.6.2: {}
 
