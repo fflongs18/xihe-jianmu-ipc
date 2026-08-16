@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@ccusage/codex':
-        specifier: 18.0.11
-        version: 18.0.11
+        specifier: 19.0.0
+        version: 19.0.0
       '@ccusage/mcp':
         specifier: 18.0.11
         version: 18.0.11
@@ -201,11 +201,19 @@ packages:
   '@ccusage/codex@18.0.11':
     resolution: {integrity: sha512-/S0dyaO3yDegtGXTaMhu1ZyT3JbSuHsiUiIu9uP6UmqIAtSd9DOko1qkM6K1roePbF/rlk596GDHW1f0664D3A==}
     engines: {node: '>=20.19.4'}
+    deprecated: Deprecated in favor of npx ccusage (use ccusage@20)
+    hasBin: true
+
+  '@ccusage/codex@19.0.0':
+    resolution: {integrity: sha512-UwsX56bDDcEKqJDixrVoKZj6U71AYyKExFXeQHlG2D9Esc70X/u3dbFVBh9ON2Ombs1U6LBUIbjGC4nmABDYNQ==}
+    engines: {node: '>=22.0.0'}
+    deprecated: Deprecated in favor of npx ccusage (use ccusage@20)
     hasBin: true
 
   '@ccusage/mcp@18.0.11':
     resolution: {integrity: sha512-R/pxJbSTr0n2ToZmpztsMBEX8qZjnnB7V1QGjT9g6C9TcZjWROSoqDNdzcrXYDS+Vb0pa2os/o4mq4LhJd6P3Q==}
     engines: {node: '>=20.19.4'}
+    deprecated: Deprecated in favor of npx ccusage (use ccusage@20)
     hasBin: true
 
   '@hono/mcp@0.1.5':
@@ -1499,6 +1507,8 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
   '@ccusage/codex@18.0.11': {}
+
+  '@ccusage/codex@19.0.0': {}
 
   '@ccusage/mcp@18.0.11':
     dependencies:
