@@ -55,7 +55,7 @@
     "url": "https://github.com/xihe-forge/xihe-jianmu-ipc/issues"
   },
   "dependencies": {
-    "@ccusage/codex": "18.0.11",
+    "@ccusage/codex": "19.0.0",
     "@ccusage/mcp": "18.0.11",
     "@larksuiteoapi/node-sdk": "^1.60.0",
     "@lydell/node-pty": "1.2.0-beta.12",
