@@ -123,6 +123,16 @@ import {
   deleteSessionById,
   deleteSessionsByName,
   cleanupSessionsHistory,
+  createPairingSession,
+  exchangePairingSession,
+  authenticateNodeToken,
+  recordNodeAudit,
+  listNodes,
+  getNode,
+  updateNodeManifest,
+  markNodeOffline,
+  revokeNode,
+  renameNode,
 } from './lib/db.mjs';
 
 const PORT = parseInt(process.env.IPC_PORT ?? DEFAULT_PORT, 10);
@@ -143,14 +153,20 @@ try {
   /* 不存在或无效 */
 }
 
-function checkAuth(providedToken, sessionName = null) {
+function resolveAuth(providedToken, sessionName = null) {
+  const node = authenticateNodeToken(providedToken, sessionName);
+  if (node) return { type: 'node', nodeId: node.node_id, sessionName: node.session_name };
   if (authTokens) {
     const expected = (sessionName && authTokens[sessionName]) || authTokens['*'];
-    if (expected) return providedToken === expected;
-    return false;
+    if (expected && providedToken === expected) return { type: 'admin' };
+    return null;
   }
-  if (AUTH_TOKEN) return providedToken === AUTH_TOKEN;
-  return true;
+  if (AUTH_TOKEN) return providedToken === AUTH_TOKEN ? { type: 'admin' } : null;
+  return { type: 'admin' };
+}
+
+function checkAuth(providedToken, sessionName = null) {
+  return Boolean(resolveAuth(providedToken, sessionName));
 }
 
 function normalizeRuntime(value) {
@@ -158,7 +174,37 @@ function normalizeRuntime(value) {
   const runtime = value.trim().toLowerCase();
   if (runtime === 'claude' || runtime === 'cc' || runtime === 'claude-code') return 'claude';
   if (runtime === 'codex') return 'codex';
-  return 'unknown';
+  return /^[a-z0-9][a-z0-9._-]{0,63}$/.test(runtime) ? runtime : 'unknown';
+}
+
+function normalizeRuntimeCapabilities(value) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 16).flatMap((entry) => {
+    if (!entry || typeof entry !== 'object') return [];
+    const id = normalizeRuntime(entry.id);
+    if (id === 'unknown') return [];
+    const label = normalizeOptionalString(entry.label) ?? id;
+    const capabilities = Array.isArray(entry.capabilities)
+      ? [...new Set(entry.capabilities
+        .filter((capability) => typeof capability === 'string')
+        .map((capability) => capability.trim().toLowerCase())
+        .filter((capability) => /^[a-z0-9][a-z0-9._-]{0,63}$/.test(capability)))]
+        .slice(0, 32)
+      : [];
+    const ready = typeof entry.ready === 'boolean' ? entry.ready : undefined;
+    const detail = normalizeOptionalString(entry.detail)?.slice(0, 256);
+    const checkedAt = Number.isFinite(entry.checkedAt) && entry.checkedAt > 0
+      ? Math.trunc(entry.checkedAt)
+      : undefined;
+    return [{
+      id,
+      label,
+      capabilities,
+      ...(ready === undefined ? {} : { ready }),
+      ...(detail ? { detail } : {}),
+      ...(checkedAt === undefined ? {} : { checkedAt }),
+    }];
+  });
 }
 
 function normalizeAppServerThreadId(value) {
@@ -271,6 +317,15 @@ const ctx = {
   deleteSessionById,
   deleteSessionsByName,
   cleanupSessionsHistory,
+  createPairingSession,
+  exchangePairingSession,
+  listNodes,
+  getNode,
+  updateNodeManifest,
+  markNodeOffline,
+  revokeNode,
+  renameNode,
+  resolveAuth,
   checkAuth,
   authTokens,
   AUTH_TOKEN,
@@ -608,6 +663,7 @@ wss.on('connection', async (ws, req) => {
     ws.close(4003, 'unauthorized');
     return;
   }
+  const nodeCredential = authenticateNodeToken(token, nameValidation.name);
 
   let session = null;
   let pendingRebind = null;
@@ -687,6 +743,7 @@ wss.on('connection', async (ws, req) => {
       lastStatuslinePushAt: null,
       subprocess: false,
       runtime: 'unknown',
+      runtimes: [],
       appServerPid: null,
       appServerThreadId: null,
       startedAt: connectedAt,
@@ -787,7 +844,21 @@ wss.on('connection', async (ws, req) => {
         updateSessionContextUsagePct(session, msg.contextUsagePct);
         session.pendingOutgoing = normalizePendingOutgoing(msg.pendingOutgoing);
         session.subprocess = msg.subprocess === true;
-        session.runtime = normalizeRuntime(msg.runtime);
+      session.runtime = normalizeRuntime(msg.runtime);
+        session.runtimes = normalizeRuntimeCapabilities(msg.runtimes);
+        if (nodeCredential) {
+          updateNodeManifest(nodeCredential.node_id, {
+            label: msg.label,
+            sessionName: nameValidation.name,
+            platform: msg.platform,
+            clientVersion: msg.clientVersion,
+            runtimes: session.runtimes,
+          });
+          recordNodeAudit(nodeCredential.node_id, 'node.connect', {
+            sessionName: nameValidation.name,
+            ip: req.socket.remoteAddress,
+          });
+        }
         session.appServerPid = normalizePid(msg.appServerPid);
         session.appServerThreadId = normalizeAppServerThreadId(msg.appServerThreadId);
         session.sessionId = normalizeOptionalString(msg.sessionId) ?? session.sessionId ?? null;
@@ -885,6 +956,7 @@ wss.on('connection', async (ws, req) => {
   };
 
   ws.on('close', () => {
+    if (nodeCredential) markNodeOffline(nameValidation.name);
     const current = sessions.get(name);
     if (current?.ws === ws && current !== session) {
       sessions.delete(name);

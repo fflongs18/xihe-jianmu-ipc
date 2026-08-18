@@ -41,6 +41,31 @@ test('T-ADR-006-V03-WIRING-FIX /sessions persists pid from register', { timeout:
   }
 });
 
+test('/sessions preserves generic runtime capabilities from register', { timeout: TEST_TIMEOUT }, async () => {
+  const hub = await startHub({ prefix: 'hub-sessions-runtime-capabilities' });
+  const ws = await connectSession(hub.port, 'runtime-capabilities', {
+    register: {
+      runtime: 'remote-agent-host',
+      runtimes: [
+        { id: 'openclaw', label: 'OpenClaw', capabilities: ['chat', 'stream', 'cancel'], ready: true, checkedAt: 1_700_000_000_000 },
+        { id: 'hermes', label: 'Hermes', capabilities: ['chat', 'stream'], ready: false, detail: 'gateway unavailable' },
+      ],
+    },
+  });
+  try {
+    const sessions = await getSessions(hub.port);
+    const session = sessions.find((item) => item.name === 'runtime-capabilities');
+    assert.equal(session?.runtime, 'remote-agent-host');
+    assert.deepEqual(session?.runtimes, [
+      { id: 'openclaw', label: 'OpenClaw', capabilities: ['chat', 'stream', 'cancel'], ready: true, checkedAt: 1_700_000_000_000 },
+      { id: 'hermes', label: 'Hermes', capabilities: ['chat', 'stream'], ready: false, detail: 'gateway unavailable' },
+    ]);
+  } finally {
+    await closeWebSocket(ws);
+    await stopHub(hub);
+  }
+});
+
 test('T-ADR-010-MOD6 /sessions persists contextUsagePct from register', { timeout: TEST_TIMEOUT }, async () => {
   const hub = await startHub({ prefix: 'hub-sessions-context-usage' });
   const ws = await connectSession(hub.port, 'context-usage-value', {
